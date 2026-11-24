@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Find your gaming PC · Moreabout PC</title>
+<meta name="description" content="Four quick questions, and you get the prebuilt gaming PC that runs GTA 6 for your budget, with real benchmark numbers.">
+<meta name="theme-color" content="#050706">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap" rel="stylesheet">
+<style>
+/* ===== Design tokens =====
+   One family (Archivo) used on its width axis: wide + black for headlines,
+   condensed for numbers (FPS, prices), normal width for reading.
+   Two surfaces: the dark "test bench" (quiz) and the light "paper" (your result). */
+:root{
+  --ink:#050706;        /* bench black */
+  --ink-2:#0d1210;      /* raised dark surface */
+  --ink-line:#1f2a24;   /* hairline on dark */
+  --paper:#f1efe8;      /* result page */
+  --paper-2:#e6e3d9;    /* raised light surface */
+  --paper-line:#d3cfc2; /* hairline on light */
+  --green:#8be000;      /* the one accent */
+  --green-deep:#2f6b00; /* accent as text on paper */
+  --text:#eef2ec; --muted:#8d978f; --muted-paper:#5d635c;
+  --ok:#8be000; --mid:#ffd23a; --low:#ff4a3d;
+  --sans:'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --r:10px; --gap:clamp(16px,4vw,28px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;background:var(--ink);transition:background-color .6s ease}
+body{background:transparent;color:var(--text);font-family:var(--sans);font-stretch:100%;font-size:17px;line-height:1.5;min-height:100svh;overflow-x:hidden;transition:background-color .6s ease,color .6s ease}
+img{display:block;max-width:100%}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--green);outline-offset:3px;border-radius:6px}
+[hidden]{display:none !important}
+.wide{font-stretch:125%;font-weight:850;letter-spacing:-.01em}
+.num{font-stretch:62%;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+
+/* ===== Background: the fan video, only behind the bench ===== */
+.bgclip{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;background:var(--ink);transition:opacity .6s}
+.bgvid{position:absolute;right:-22%;bottom:2%;width:min(92%,620px);height:auto;aspect-ratio:9/16;object-fit:cover;opacity:0;-webkit-mask-image:radial-gradient(closest-side,#000 62%,transparent);mask-image:radial-gradient(closest-side,#000 62%,transparent);animation:turnon 1.6s .3s ease-out forwards}
+@keyframes turnon{0%{opacity:0}15%{opacity:.7}25%{opacity:.1}38%{opacity:.8}48%{opacity:.3}62%,100%{opacity:.8}}
+.bgclip::after{content:"";position:absolute;inset:0;background:linear-gradient(var(--ink) 0,rgba(5,7,6,.6) 24%,rgba(5,7,6,0) 48%)}
+@media (min-width:900px){.bgvid{right:max(-4%,calc(50% - 700px));bottom:-18%;width:600px}}
+
+/* ===== Header: wordmark + the FPS meter that doubles as progress ===== */
+.bar{position:sticky;top:0;z-index:10;background:rgba(5,7,6,.82);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--ink-line);transition:background-color .6s,border-color .6s}
+.bar-in{max-width:1160px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:18px}
+.brand{font-stretch:125%;font-weight:900;font-size:17px;letter-spacing:.02em;white-space:nowrap;text-decoration:none}
+.brand span{color:var(--green)}
+.meter{flex:1;display:flex;align-items:center;gap:12px;max-width:420px;margin-left:auto}
+.qcount{font-size:13px;color:var(--muted);white-space:nowrap}
+.track{flex:1;height:4px;border-radius:2px;background:var(--ink-line);overflow:hidden}
+.fill{height:100%;width:0;background:var(--green);transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.fps{font-stretch:62%;font-weight:700;font-size:26px;line-height:1;min-width:76px;text-align:right;color:var(--low);font-variant-numeric:tabular-nums;transition:color .3s}
+.fps small{font-stretch:100%;font-weight:600;font-size:11px;color:var(--muted);margin-left:4px}
+
+/* ===== Layout ===== */
+.wrap{max-width:1160px;margin:0 auto;padding:0 20px}
+.layout{overflow-x:clip;display:grid;gap:var(--gap);padding:clamp(22px,5vw,64px) 0 56px}
+@media (min-width:900px){
+  .layout{grid-template-columns:minmax(0,5fr) minmax(0,6fr);align-items:start;gap:64px}
+  .layout .hook.gone{display:block}
+  .hook{position:sticky;top:84px}
+  .layout{padding-top:36px}
+  html.lit .layout{grid-template-columns:1fr}
+  html.lit .layout .hook{display:none}
+}
+
+/* ===== Hero ===== */
+.hook .when{font-size:14px;color:var(--muted);margin-bottom:14px}
+.hook .when b{color:var(--text);font-weight:600}
+.hook h1{font-stretch:125%;font-weight:900;font-size:clamp(34px,9.4vw,58px);line-height:.96;letter-spacing:-.025em;max-width:11ch}
+.hook h1 em{font-style:normal;color:var(--green)}
+.hook p.sub{color:#b9c2bb;font-size:clamp(16px,1.6vw,19px);max-width:38ch;margin-top:18px}
+.facts{display:flex;gap:28px;margin-top:26px;border-top:1px solid var(--ink-line);padding-top:16px;list-style:none}
+.facts b{display:block;font-stretch:62%;font-weight:700;font-size:34px;line-height:1;color:var(--text)}
+.facts span{font-size:13px;color:var(--muted)}
+.hook.gone{display:none}
+@media (max-width:899px){.hook p.sub{font-size:16px;margin-top:12px}.facts{margin-top:18px;gap:22px}.facts b{font-size:28px}}
+
+/* ===== The bench (quiz panel) ===== */
+.stage{position:relative}
+@media (min-width:900px){.stage{background:rgba(13,18,16,.72);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid var(--ink-line);border-radius:16px;padding:34px 34px 26px}
+  html.lit .stage{background:none;border:0;padding:0;-webkit-backdrop-filter:none;backdrop-filter:none}}
+.screen{display:none}
+.screen.on{display:block;animation:slidein .42s cubic-bezier(.2,.8,.2,1)}
+.screen.out{display:block;position:absolute;inset:0 0 auto 0;animation:slideout .22s ease-in forwards;pointer-events:none}
+@media (min-width:900px){.screen.out{inset:34px 34px auto 34px}}
+.stage.back .screen.on{animation-name:slideinback}
+@keyframes slidein{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+@keyframes slideinback{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}
+@keyframes slideout{to{opacity:0;transform:translateX(-40px)}}
+.step{color:var(--muted);font-size:14px;margin-bottom:8px}
+.step b{color:var(--green);font-weight:700}
+h2{font-stretch:125%;font-weight:850;line-height:1.02;letter-spacing:-.02em;font-size:clamp(28px,7.4vw,40px);margin-bottom:20px}
+
+/* answers: a shared base, then a different form per question */
+.opts{display:grid;gap:10px}
+.opt{position:relative;overflow:hidden;display:flex;align-items:center;gap:16px;width:100%;text-align:left;padding:16px 18px;border-radius:var(--r);background:rgba(13,18,16,.78);border:1px solid var(--ink-line);min-height:72px;transition:border-color .18s,background-color .18s,transform .12s}
+.screen.on .opt{animation:rise .45s cubic-bezier(.2,.8,.2,1) both}
+.screen.on .opt:nth-child(2){animation-delay:.05s}.screen.on .opt:nth-child(3){animation-delay:.1s}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.opt:hover{border-color:#3d5a2a;background:rgba(20,28,22,.9)}
+.opt:active{transform:scale(.985)}
+.opt[aria-pressed="true"]{border-color:var(--green);background:rgba(139,224,0,.08)}
+.opt::after{content:"";position:absolute;right:16px;top:50%;width:22px;height:22px;margin-top:-11px;border-radius:50%;border:1.5px solid #3a463e;transition:all .18s}
+.opt[aria-pressed="true"]::after{border-color:var(--green);background:var(--green) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%23050706' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/16px no-repeat}
+.opt .ripple{position:absolute;border-radius:50%;background:rgba(139,224,0,.22);transform:scale(0);animation:ripple .5s ease-out forwards;pointer-events:none}
+@keyframes ripple{to{transform:scale(1);opacity:0}}
+.opt .t{padding-right:30px}
+.opt b{font-weight:700;font-size:18px;display:block;line-height:1.25}
+.opt .t>span{color:var(--muted);font-size:14.5px}
+
+/* Q1: a price ladder, the tier written as a big condensed glyph */
+.opt .tier{flex:none;width:52px;font-stretch:62%;font-weight:700;font-size:30px;line-height:1;color:var(--green);letter-spacing:.02em}
+.cur{display:inline-flex;border:1px solid var(--ink-line);border-radius:8px;overflow:hidden;margin-bottom:16px}
+.cur button{padding:7px 14px;font-weight:700;font-size:14px;color:var(--muted)}
+.cur button[aria-pressed="true"]{background:var(--green);color:var(--ink)}
+
+/* Q2: each screen shown as its own pixel density */
+.opt .px{flex:none;width:58px;height:44px;border-radius:4px;border:1px solid #3a463e;background-color:#0a0f0c;
+  background-image:linear-gradient(rgba(139,224,0,.42) 1px,transparent 1px),linear-gradient(90deg,rgba(139,224,0,.42) 1px,transparent 1px);background-size:var(--c) var(--c);background-position:-1px -1px}
+
+/* Q3: real photos (Pexels), thumbnail on phones, full frame on desktop */
+.opts.pics .opt{padding:0;align-items:stretch;gap:0}
+.opts.pics .opt img{flex:none;width:108px;height:auto;min-height:80px;object-fit:cover;filter:saturate(.85) brightness(.9);transition:filter .2s}
+.opts.pics .opt .t{padding:14px 46px 14px 16px;align-self:center}
+.opts.pics .opt[aria-pressed="true"] img,.opts.pics .opt:hover img{filter:none}
+
+/* Q4: two looks side by side */
+.opts.duo{grid-template-columns:1fr 1fr}
+.opts.duo .opt{flex-direction:column;align-items:stretch;padding:0;gap:0}
+.opts.duo .opt img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;filter:saturate(.9) brightness(.88)}
+.opts.duo .opt .t{padding:12px 14px 14px}
+.opts.duo .opt::after{top:12px;margin-top:0;right:12px;background:rgba(5,7,6,.5)}
+
+.row{display:flex;justify-content:space-between;align-items:center;margin-top:18px}
+.skip,.back{color:var(--muted);font-weight:600;font-size:15px;padding:10px 2px;transition:color .15s}
+.skip{text-decoration:underline;text-underline-offset:4px;text-decoration-color:#3a463e;margin-left:auto}
+.skip:hover,.back:hover{color:var(--text)}
+.back::before{content:"← "}
+
+/* ===== Bench run (between quiz and result) ===== */
+.test .lead{color:var(--muted);font-size:15px;margin:-10px 0 22px}
+.tbar{display:grid;grid-template-columns:112px 1fr 52px;gap:12px;align-items:center;margin:12px 0;font-weight:600;font-size:14.5px}
+.tbar i{height:10px;border-radius:2px;background:var(--ink-line);overflow:hidden;display:block}
+.tbar i u{display:block;height:100%;width:0;background:var(--green)}
+.tbar.ref i u{background:#59625b}
+.tbar b{font-stretch:62%;font-weight:700;font-size:26px;line-height:1;text-align:right;color:var(--green);font-variant-numeric:tabular-nums}
+.tbar.ref b{color:var(--muted)}
+
+/* ===== Result: the page turns to paper ===== */
+html.lit{background:var(--paper)}
+html.lit body{color:#101511}
+html.lit .bgclip{opacity:0}
+html.lit .bar{background:rgba(241,239,232,.88);border-color:var(--paper-line)}
+html.lit .brand span{color:var(--green-deep)}
+html.lit .track{background:var(--paper-line)}
+html.lit .fill{background:var(--green-deep)}
+html.lit .qcount,html.lit .fps small{color:var(--muted-paper)}
+html.lit{--ok:var(--green-deep);--mid:#9a7100;--low:#c2271c}
+
+.reveal{padding:70px 0 40px}
+.reveal p{font-stretch:125%;font-weight:850;font-size:clamp(30px,8vw,56px);letter-spacing:-.02em;line-height:1}
+.reveal .scan{height:3px;max-width:320px;margin-top:22px;background:var(--paper-line);overflow:hidden;border-radius:2px}
+.reveal .scan i{display:block;height:100%;width:40%;background:var(--green-deep);animation:scan 1.1s ease-in-out infinite}
+@keyframes scan{from{transform:translateX(-100%)}to{transform:translateX(250%)}}
+
+.match{font-size:15px;color:var(--muted-paper);margin-bottom:14px}
+.match b{color:#101511;font-weight:700}
+.pc{display:grid;gap:22px 48px;padding-bottom:36px;border-bottom:1px solid var(--paper-line);animation:land .7s cubic-bezier(.2,.9,.3,1) both}
+@keyframes land{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@media (min-width:900px){.pc{grid-template-columns:minmax(0,5fr) minmax(0,6fr);align-items:start}}
+.shot{background:var(--ink);border-radius:14px;aspect-ratio:4/3.4;overflow:hidden}
+.shot .gpu{position:absolute;left:14px;top:12px;font-size:12.5px;color:#aab3ac;z-index:3}
+
+/* the rig: a PC standing on a perspective grid floor, with a power switch.
+   Two photos stacked: lights off (grey) and lights on; switching flickers like a real boot. */
+.rig{position:relative}
+.rig .floor{position:absolute;left:-30%;right:-30%;bottom:-8%;height:46%;transform:perspective(420px) rotateX(62deg);transform-origin:50% 100%;
+  background-image:linear-gradient(rgba(139,224,0,.28) 1px,transparent 1px),linear-gradient(90deg,rgba(139,224,0,.28) 1px,transparent 1px);background-size:34px 34px;
+  -webkit-mask-image:radial-gradient(60% 90% at 50% 100%,#000 30%,transparent 75%);mask-image:radial-gradient(60% 90% at 50% 100%,#000 30%,transparent 75%);opacity:.35;transition:opacity .4s}
+.rig::before{content:"";position:absolute;left:50%;bottom:8%;width:72%;height:26%;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(139,224,0,.38),transparent);filter:blur(8px);opacity:0;transition:opacity .5s}
+.rig .pcs{position:absolute;left:10%;right:10%;top:8%;bottom:10%;animation:float 4s ease-in-out infinite alternate}
+.rig .pcs img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.rig .pcs .lit{opacity:0}
+.rig.on .pcs .lit{opacity:1;animation:boot .9s ease-out}
+.rig.on::before{opacity:1}.rig.on .floor{opacity:1}
+@keyframes boot{0%{opacity:0}12%{opacity:.9}20%{opacity:.15}34%{opacity:1}44%{opacity:.4}60%,100%{opacity:1}}
+@keyframes float{from{transform:translateY(5px)}to{transform:translateY(-7px)}}
+.power{position:absolute;right:12px;bottom:12px;z-index:3;display:inline-flex;align-items:center;gap:8px;padding:7px 12px 7px 9px;border-radius:999px;border:1px solid #2d3a31;background:rgba(5,7,6,.7);color:#aab3ac;font-size:13px;font-weight:700;transition:border-color .2s,color .2s}
+.power i{width:18px;height:18px;border-radius:50%;border:2px solid currentColor;position:relative}
+.power i::after{content:"";position:absolute;left:50%;top:-5px;width:2px;height:9px;margin-left:-1px;background:currentColor;box-shadow:0 0 0 2px rgba(5,7,6,.9)}
+.power[aria-pressed="true"]{color:var(--green);border-color:rgba(139,224,0,.5)}
+.power[aria-pressed="true"] i{box-shadow:0 0 10px rgba(139,224,0,.6)}
+
+/* hero rig (desktop only): the PC you could get, with its result card floating on it */
+.hero-rig{display:none}
+@media (min-width:900px){
+  .hero-rig{display:block;height:270px;margin-top:14px}
+  .hero-rig .pcs{left:4%;right:34%}
+  .hero-rig .floor{left:-20%;right:0}
+  .hero-rig::before{left:35%}
+  .chip{position:absolute;right:0;top:34%;z-index:3;min-width:200px;background:rgba(13,18,16,.86);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid var(--ink-line);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--muted);transform:translateY(8px);opacity:0;transition:opacity .5s .3s,transform .5s .3s}
+  .hero-rig.on .chip{opacity:1;transform:none}
+  .chip b{display:block;color:var(--text);font-size:14px;font-weight:700}
+  .chip .n{display:block;font-stretch:62%;font-weight:700;font-size:40px;line-height:1;color:var(--green);margin:6px 0 2px}
+  .chip .p{display:block;margin-top:8px;padding-top:8px;border-top:1px solid var(--ink-line);color:var(--text);font-weight:600}
+  .hero-rig .power{right:auto;left:8px;bottom:4px}
+  .hook p.sub{margin-top:14px}.facts{display:none}
+}
+
+/* price, shown as a store chip with the date it was checked */
+.store{display:inline-flex;align-items:center;gap:8px;padding:5px 10px 5px 6px;border-radius:999px;background:var(--paper-2);font-size:13.5px;color:var(--muted-paper)}
+.store b{background:#101511;color:var(--paper);border-radius:999px;padding:2px 9px;font-weight:700;font-size:12.5px}
+.pc-name{margin:0;font-stretch:125%;font-weight:900;font-size:clamp(30px,6vw,52px);line-height:.98;letter-spacing:-.025em}
+.pc-buy{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:12px 0 4px}
+.pc-price{font-stretch:62%;font-weight:700;font-size:clamp(46px,9vw,64px);line-height:1;font-variant-numeric:tabular-nums}
+.pc-shop{color:var(--muted-paper);font-size:15px}
+.bigfps{display:flex;align-items:baseline;gap:12px;margin:18px 0 6px;padding:14px 0;border-top:1px solid var(--paper-line);border-bottom:1px solid var(--paper-line)}
+.bigfps b{font-stretch:62%;font-weight:800;font-size:76px;line-height:.9;color:var(--green-deep);font-variant-numeric:tabular-nums}
+.bigfps span{color:var(--muted-paper);font-size:14.5px;line-height:1.35}
+.bigfps span strong{display:block;color:#101511;font-weight:700;font-size:16px}
+.specs{display:grid;grid-template-columns:auto 1fr;gap:0 18px;margin:16px 0;font-size:15.5px}
+.specs dt{color:var(--muted-paper);padding:8px 0;border-bottom:1px solid var(--paper-line)}
+.specs dd{font-weight:600;padding:8px 0;border-bottom:1px solid var(--paper-line)}
+.why{font-size:16px;color:#2c332d;max-width:52ch;margin-bottom:20px}
+.cta{display:inline-flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:18px 22px;border-radius:var(--r);background:var(--green);color:var(--ink);font-weight:800;font-size:18px;text-decoration:none;transition:transform .15s,background-color .15s}
+.cta:hover{transform:translateY(-2px);background:#9cf00f}
+.cta svg{transition:transform .15s}.cta:hover svg{transform:translateX(3px)}
+@media (min-width:900px){.cta{width:auto;min-width:300px}}
+
+/* benchmark chart, publication style */
+.chart{grid-column:1/-1;margin-top:6px}
+.chart h3{font-weight:700;font-size:16px;margin-bottom:2px}
+.chart .cap{color:var(--muted-paper);font-size:13.5px;margin-bottom:12px}
+.br{display:grid;grid-template-columns:110px 1fr 52px;gap:12px;align-items:center;font-size:14px;color:var(--muted-paper);padding:7px 0}
+.br i{height:12px;display:block;position:relative;background:var(--paper-2);border-radius:2px}
+.br i u{position:absolute;inset:0 auto 0 0;width:0;border-radius:2px;background:#a9aa9f;transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.br.me{color:#101511;font-weight:700}.br.me i u{background:var(--green-deep)}
+.br b{font-stretch:62%;font-weight:700;font-size:22px;line-height:1;text-align:right;color:#101511;font-variant-numeric:tabular-nums}
+.chart small{display:block;color:var(--muted-paper);font-size:12.5px;margin-top:8px;max-width:70ch}
+
+/* comparison table */
+.others-btn{display:flex;align-items:center;justify-content:space-between;width:100%;margin:28px 0 0;padding:18px 0;border-bottom:1px solid var(--paper-line);font-stretch:125%;font-weight:850;font-size:clamp(20px,4.5vw,28px);letter-spacing:-.015em;text-align:left}
+.others-btn::after{content:"+";font-stretch:100%;font-weight:400;font-size:30px;transition:transform .25s}
+.others-btn[aria-expanded="true"]::after{transform:rotate(45deg)}
+#r-others{animation:rise .4s both}
+.cmp{width:100%;border-collapse:collapse;margin:14px 0 6px;font-size:14.5px;table-layout:fixed}
+.cmp th,.cmp td{padding:10px 8px;text-align:left;vertical-align:top;border-bottom:1px solid var(--paper-line)}
+.cmp thead th{vertical-align:bottom;font-weight:700;font-size:14px;line-height:1.2}
+.cmp thead img{width:56px;height:56px;object-fit:contain;margin-bottom:6px}
+.cmp tbody th{color:var(--muted-paper);font-weight:500;width:88px}
+.cmp .me{background:rgba(47,107,0,.07)}
+.cmp .me-h{color:var(--green-deep)}
+.cmp thead span{display:block;overflow-wrap:anywhere}
+.cmp td.n{font-stretch:62%;font-weight:700;font-size:22px;line-height:1;font-variant-numeric:tabular-nums}
+.cmp a{font-weight:700;font-size:14px;text-underline-offset:3px}
+@media (max-width:520px){.cmp thead th{font-size:12px}.cmp{font-size:13px}.cmp th,.cmp td{padding:9px 5px}.cmp tbody th{width:70px}.cmp thead img{width:44px;height:44px}}
+
+/* monitors */
+.section-title{font-stretch:125%;font-weight:850;font-size:clamp(22px,5vw,32px);letter-spacing:-.015em;margin:46px 0 4px}
+.section-sub{color:var(--muted-paper);font-size:15px;margin-bottom:12px}
+.mon{display:grid;gap:0;border-top:1px solid var(--paper-line)}
+@media (min-width:900px){.mon{grid-template-columns:repeat(3,1fr);gap:0 28px;border-top:0}.mon div{border-top:1px solid var(--paper-line)}}
+.mon div{padding:16px 0;border-bottom:1px solid var(--paper-line)}
+.mon b{display:block;font-weight:700;font-size:17px}
+.mon span{color:var(--muted-paper);font-size:14.5px}
+.mon .on b::after{content:" · your match";color:var(--green-deep);font-weight:700}
+.again{margin-top:26px;font-weight:700;font-size:15px;color:#101511;border:1px solid #101511;border-radius:var(--r);padding:12px 20px;transition:background-color .15s,color .15s}
+.again:hover{background:#101511;color:var(--paper)}
+.r-lead{color:var(--muted-paper);font-size:14px;margin-top:14px}
+
+/* ===== Footer ===== */
+footer{background:var(--ink);color:var(--muted);border-top:1px solid var(--ink-line);font-size:13.5px;line-height:1.65}
+footer .wrap{display:grid;gap:26px;padding-top:40px;padding-bottom:48px}
+@media (min-width:900px){footer .wrap{grid-template-columns:1fr 2fr 1.4fr;gap:48px}}
+footer .brand{color:var(--text);font-size:16px;display:inline-block;margin-bottom:6px}
+footer h4{color:var(--text);font-weight:700;font-size:14px;margin-bottom:6px}
+footer p+p{margin-top:8px}
+
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}.bgvid{opacity:.8}}
+</style>
+</head>
+<body>
+<div class="bgclip" aria-hidden="true"><video class="bgvid" src="img/bgfan.mp4" poster="img/bgfan.jpg" autoplay muted loop playsinline preload="auto"></video></div>
+
+<header class="bar">
+  <div class="bar-in">
+    <a class="brand" href="#top" id="top">MOREABOUT <span>PC</span></a>
+    <div class="meter" aria-label="Quiz progress">
+      <span class="qcount" id="qcount">1 of 4</span>
+      <div class="track" aria-hidden="true"><div class="fill" id="fill"></div></div>
+      <div class="fps" id="fps" aria-live="polite">0<small>FPS</small></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+ <div class="layout">
+  <div class="hook" id="hook">
+    <p class="when">Christmas 2026 · <b>US prices checked Nov 24</b></p>
+    <h1>Which PC runs <em>GTA&nbsp;6</em> for your budget?</h1>
+    <p class="sub">Answer four questions. You get one prebuilt PC that fits, with the frame rate it really gets in the games you play.</p>
+    <ul class="facts">
+      <li><b>4</b><span>questions</span></li>
+      <li><b>30 s</b><span>no sign-up</span></li>
+      <li><b>25</b><span>games benchmarked</span></li>
+    </ul>
+    <div class="rig hero-rig" id="hero-rig">
+      <div class="floor" aria-hidden="true"></div>
+      <div class="pcs"><img class="off" src="img/acer_off.webp" alt="" width="299" height="350"><img class="lit" src="img/acer.webp" alt="Acer Nitro 85 gaming PC" width="299" height="350"></div>
+      <div class="chip"><b>Acer Nitro 85</b><span class="n">63 FPS</span>Cyberpunk 2077, 4K, maxed<span class="p">$2,010 at Amazon</span></div>
+      <button class="power" aria-pressed="false"><i aria-hidden="true"></i>Power</button>
+    </div>
+  </div>
+
+  <div class="stage" id="stage">
+  <section class="screen on" id="s1" aria-labelledby="h-s1">
+    <p class="step"><b>Question 1</b> of 4</p>
+    <h2 id="h-s1">How much can you spend?</h2>
+    <div class="cur" role="group" aria-label="Currency"><button data-cur="usd" aria-pressed="true">$ USD</button><button data-cur="eur" aria-pressed="false">€ EUR</button></div>
+    <div class="opts" data-q="budget">
+      <button class="opt" data-v="1"><span class="tier" aria-hidden="true">$</span><span class="t"><b data-usd="Under $900" data-eur="Under €850">Under $900</b><span>Plays everything at 1080p</span></span></button>
+      <button class="opt" data-v="2"><span class="tier" aria-hidden="true">$$</span><span class="t"><b data-usd="$900 to $1,800" data-eur="€850 to €1,700">$900 to $1,800</b><span>High settings at 1440p</span></span></button>
+      <button class="opt" data-v="3"><span class="tier" aria-hidden="true">$$$</span><span class="t"><b data-usd="$1,800 to $2,500" data-eur="€1,700 to €2,400">$1,800 to $2,500</b><span>4K, no compromise</span></span></button>
+    </div>
+    <div class="row"><button class="skip" data-skip>Skip</button></div>
+  </section>
+
+  <section class="screen" id="s2" aria-labelledby="h-s2">
+    <p class="step"><b>Question 2</b> of 4</p>
+    <h2 id="h-s2">What screen do you play on?</h2>
+    <div class="opts" data-q="res">
+      <button class="opt" data-v="1080"><span class="px" style="--c:11px" aria-hidden="true"></span><span class="t"><b>1080p</b><span>Most monitors and TVs under 27"</span></span></button>
+      <button class="opt" data-v="1440"><span class="px" style="--c:7.5px" aria-hidden="true"></span><span class="t"><b>1440p</b><span>Sharper, the sweet spot for 27"</span></span></button>
+      <button class="opt" data-v="4k"><span class="px" style="--c:4.5px" aria-hidden="true"></span><span class="t"><b>4K</b><span>Big monitor or a 4K TV</span></span></button>
+    </div>
+    <div class="row"><button class="back" data-back>Back</button><button class="skip" data-skip>Not sure, skip</button></div>
+  </section>
+
+  <section class="screen" id="s3" aria-labelledby="h-s3">
+    <p class="step"><b>Question 3</b> of 4</p>
+    <h2 id="h-s3">What do you play the most?</h2>
+    <div class="opts pics" data-q="games">
+      <button class="opt" data-v="open"><img src="img/q_open.webp" alt="" width="216" height="132" loading="lazy"><span class="t"><b>Big open worlds</b><span>GTA 6, Cyberpunk, RDR2</span></span></button>
+      <button class="opt" data-v="comp"><img src="img/q_comp.webp" alt="" width="216" height="132" loading="lazy"><span class="t"><b>Competitive shooters</b><span>Fortnite, CS2, Valorant, Warzone</span></span></button>
+      <button class="opt" data-v="mix"><img src="img/q_mix.webp" alt="" width="216" height="132" loading="lazy"><span class="t"><b>A bit of everything</b><span>Whatever's new</span></span></button>
+    </div>
+    <div class="row"><button class="back" data-back>Back</button><button class="skip" data-skip>Skip</button></div>
+  </section>
+
+  <section class="screen" id="s4" aria-labelledby="h-s4">
+    <p class="step"><b>Question 4</b> of 4</p>
+    <h2 id="h-s4">RGB lights?</h2>
+    <div class="opts duo" data-q="rgb">
+      <button class="opt" data-v="yes"><img src="img/q_rgbyes.webp" alt="" width="360" height="270" loading="lazy"><span class="t"><b>Light it up</b><span>Glass side, colour fans</span></span></button>
+      <button class="opt" data-v="no"><img src="img/q_rgbno.webp" alt="" width="360" height="270" loading="lazy"><span class="t"><b>Keep it clean</b><span>Plain case, nothing flashing</span></span></button>
+    </div>
+    <div class="row"><button class="back" data-back>Back</button><button class="skip" data-skip>Don't care</button></div>
+  </section>
+
+  <section class="screen test" id="s5" aria-labelledby="h-s5">
+    <p class="step"><b>Bench run</b></p>
+    <h2 id="h-s5">Testing the 3 PCs</h2>
+    <p class="lead" id="t-lead"></p>
+    <div id="t-bars"></div>
+  </section>
+
+  <section class="screen" id="s6" aria-labelledby="h-s6">
+    <div class="reveal" id="r-wait"><p>Your PC is&hellip;</p><div class="scan"><i></i></div></div>
+    <div id="r-done" hidden>
+      <p class="match" id="h-s6"><b>Your match.</b> Picked from your answers.</p>
+      <div id="r-best"></div>
+      <button class="others-btn" id="r-toggle" aria-expanded="false" aria-controls="r-others">Compare with the other 2 PCs</button>
+      <div id="r-others" hidden></div>
+      <p class="r-lead" id="r-lead"></p>
+
+      <h3 class="section-title">Pair it with a screen</h3>
+      <p class="section-sub">The PC only shows its frame rate on a screen that keeps up.</p>
+      <div class="mon">
+        <div data-tier="1"><b>1080p, 144 Hz or more</b><span>For the $749 PC. Picks coming soon.</span></div>
+        <div data-tier="2"><b>1440p, 165 Hz</b><span>For the $1,540 PC. Picks coming soon.</span></div>
+        <div data-tier="3"><b>4K, 144 Hz</b><span>For the $2,010 PC. Picks coming soon.</span></div>
+      </div>
+      <button class="again" data-restart>Start again</button>
+    </div>
+  </section>
+  </div>
+ </div>
+</main>
+
+<footer id="how">
+  <div class="wrap">
+    <div><span class="brand">MOREABOUT <span>PC</span></span><p>Gaming PCs, explained without the jargon.</p></div>
+    <div>
+      <h4>How we test</h4>
+      <p>FPS numbers come from TechPowerUp graphics card reviews: highest settings, no upscaling, tested with a Ryzen 7 9800X3D. With the processor inside these PCs, games that lean on the CPU, like Counter-Strike 2, can run lower. GTA 6 is not out on PC yet, so we use Cyberpunk 2077 as the closest heavy open world.</p>
+      <p>Prices checked on Walmart.com and Amazon.com on Nov 24, 2026. They can change.</p>
+    </div>
+    <div>
+      <h4>Disclosure and credits</h4>
+      <p>As an Amazon Associate, Moreabout PC earns from qualifying purchases, at no extra cost to you.</p>
+      <p>Photos on Pexels: Sachin Shettigar (background video), Vika Glitter, Yan Krukau, Ron Lach, Gibson Chan, Andrey Matveev.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ---- the 3 PCs from the Short (US, prices checked 24/11/2026) ----
+const TAG = ""; // Amazon Associates tag goes here (none yet)
+const PCS = [
+ {id:"abs", name:"ABS Cyclone M Aqua", price:749, shop:"Walmart", url:"https://www.walmart.com/ip/20940963207", img:"abs",
+  tier:1, rgb:true, cpu:"Intel i5-14400F, 10 cores", gpu:"RTX 5060, 8 GB", ram:"16 GB RAM", ssd:"1 TB SSD", res:"1080", g:"5060",
+  why:"The cheapest PC we found that runs Cyberpunk maxed at 1080p, about 100 FPS. That's a PS5 plus $100."},
+ {id:"ibp", name:"iBUYPOWER Element", price:1539.99, shop:"Amazon", url:"https://www.amazon.com/dp/B0HM3FKBML", img:"ibp",
+  tier:2, rgb:true, cpu:"Ryzen 7 8700F, 8 cores", gpu:"RX 9070 GRE, 12 GB", ram:"16 GB RAM", ssd:"1 TB SSD", res:"1440", g:"gre",
+  why:"Smooth 1440p in big games, with 12 GB of video memory for max textures."},
+ {id:"acer", name:"Acer Nitro 85", price:2009.99, shop:"Amazon", url:"https://www.amazon.com/dp/B0GWNCBK2Y", img:"acer",
+  tier:3, rgb:true, cpu:"Ryzen 9 9900X, 12 cores", gpu:"RX 9070 XT, 16 GB", ram:"16 GB RAM", ssd:"1 TB SSD", res:"4k", g:"xt",
+  why:"60 FPS in 4K with no upscaling, behind a curved glass panel with ARGB fans. 16 GB of RAM is enough to start, and there's room to add more."}
+];
+// Average FPS, highest settings, no upscaling, from TechPowerUp reviews (Sapphire RX 9070 GRE Pulse, MSI RTX 5060 Gaming OC). [1080p, 1440p, 4K]
+const GAMES = {
+ cp:  {label:"Cyberpunk 2077", fps:{"5060":[102,62,28], gre:[147,99,47], xt:[180,125,63]}},
+ cs2: {label:"Counter-Strike 2", fps:{"5060":[279,189,98], gre:[248,162,78], xt:[322,219,109]}},
+ avg: {label:"Average of 25 games", fps:{"5060":[91,65,34], gre:[125,92,52], xt:[157,119,70]}}
+};
+const GNAME = {"5060":"RTX 5060", gre:"RX 9070 GRE", xt:"RX 9070 XT"};
+const RES = {"1080":[0,"1080p"], "1440":[1,"1440p"], "4k":[2,"4K"]};
+const A = {budget:null,res:null,games:null,rgb:null}; let cur="usd", step=1, shown=0;
+const gameKey = ()=> A.games==="open"?"cp" : A.games==="comp"?"cs2" : "avg";
+const resOf = p => A.res || p.res;
+const fpsOf = (p,res)=> GAMES[gameKey()].fps[p.g][RES[res||resOf(p)][0]];
+const $ = s=>document.querySelector(s), $$ = s=>[...document.querySelectorAll(s)];
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const FPS_AT = {1:0,2:15,3:30,4:45,5:60}; // step 6 = the real FPS of the PC we pick
+const ARROW = '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+function show(n,back){
+  const prev=$("#s"+step), next=$("#s"+n); if(prev===next) return;
+  $("#stage").classList.toggle("back",!!back);
+  prev.classList.remove("on"); prev.classList.add("out"); setTimeout(()=>prev.classList.remove("out"),240);
+  next.classList.add("on"); step=n;
+  $("#hook").classList.toggle("gone", n!==1);
+  document.documentElement.classList.toggle("lit", n===6);
+  $("#qcount").textContent = n<=4 ? `${n} of 4` : n===5 ? "Testing" : "Done";
+  $("#fill").style.width=((n-1)/5*100)+"%"; if(n<6) countTo(FPS_AT[n]);
+  window.scrollTo({top:0,behavior:reduce?"auto":"smooth"});
+  if(n===5) runTest(); if(n===6) result();
+}
+function countTo(t){ const from=shown, t0=performance.now();
+  const tick=now=>{ const k=reduce?1:Math.min(1,(now-t0)/600); shown=Math.round(from+(t-from)*k);
+    const f=$("#fps"); f.innerHTML=shown+"<small>FPS</small>"; f.style.color= shown>=60?"var(--ok)":shown>=30?"var(--mid)":"var(--low)";
+    if(k<1) requestAnimationFrame(tick); }; requestAnimationFrame(tick); }
+function countEl(el,t,ms){ const t0=performance.now(); const tick=now=>{ const k=reduce?1:Math.min(1,(now-t0)/ms); el.textContent=Math.round(t*(1-Math.pow(1-k,3))); if(k<1) requestAnimationFrame(tick); }; requestAnimationFrame(tick); }
+// answers: ripple, check mark, then slide to the next question
+$$(".opts").forEach(g=>g.querySelectorAll(".opt").forEach(b=>b.addEventListener("click",e=>{
+  g.querySelectorAll(".opt").forEach(x=>x.setAttribute("aria-pressed","false")); b.setAttribute("aria-pressed","true");
+  const r=b.getBoundingClientRect(), d=Math.max(r.width,r.height)*2, s=document.createElement("i");
+  s.className="ripple"; s.style.cssText=`width:${d}px;height:${d}px;left:${(e.clientX||r.left+r.width/2)-r.left-d/2}px;top:${(e.clientY||r.top+r.height/2)-r.top-d/2}px`;
+  b.appendChild(s); setTimeout(()=>s.remove(),520);
+  A[g.dataset.q]=b.dataset.v; setTimeout(()=>show(step+1),reduce?0:320); })));
+$$(".opt").forEach(b=>b.setAttribute("aria-pressed","false"));
+$$("[data-skip]").forEach(b=>b.onclick=()=>show(step+1));
+$$("[data-back]").forEach(b=>b.onclick=()=>show(Math.max(1,step-1),true));
+$("[data-restart]").onclick=()=>{ Object.keys(A).forEach(k=>A[k]=null); $$(".opt").forEach(x=>x.setAttribute("aria-pressed","false")); show(1,true); };
+$$("[data-cur]").forEach(b=>b.onclick=()=>{ cur=b.dataset.cur; $$("[data-cur]").forEach(x=>x.setAttribute("aria-pressed",x===b));
+  $$("[data-usd]").forEach(el=>el.textContent=el.dataset[cur]); });
+// bench run: the 3 PCs "run" the game you picked, at your screen resolution
+function runTest(){
+  const gk=gameKey(), res=A.res||"1440", rows=PCS.map(p=>[p.name.split(" ").slice(0,2).join(" "),fpsOf(p,res)]);
+  if(gk==="cp") rows.unshift(["PS5",60]);
+  const max=Math.max(...rows.map(r=>r[1]))*1.08;
+  $("#t-lead").textContent=`${GAMES[gk].label}, ${RES[res][1]}, highest settings, no upscaling.`;
+  $("#t-bars").innerHTML=rows.map(r=>`<div class="tbar${r[0]==="PS5"?" ref":""}"><span>${r[0]}</span><i><u></u></i><b>0</b></div>`).join("");
+  $$("#t-bars .tbar").forEach((el,i)=>{ const v=rows[i][1], u=el.querySelector("u"), b=el.querySelector("b"), t0=performance.now()+i*180;
+    const tick=now=>{ const k=reduce?1:Math.max(0,Math.min(1,(now-t0)/900)); u.style.width=(v/max*100*k)+"%"; b.textContent=Math.round(v*k); if(k<1) requestAnimationFrame(tick); };
+    requestAnimationFrame(tick); });
+  setTimeout(()=>{ if(step===5) show(6); }, reduce?300:1900);
+}
+// ---- scoring ----
+function score(p){ let s=0;
+  if(A.budget){ const b=+A.budget; s += p.tier===b?50 : (p.tier<b?20-(b-p.tier)*8:-60); }
+  if(A.res){ s += p.res===A.res?30:0; }
+  if(A.games==="open" && /1[26] GB/.test(p.gpu)) s+=8;
+  if(A.rgb==="yes" && p.rgb) s+=6; if(A.rgb==="no" && !p.rgb) s+=10;
+  return s; }
+const money=v=>"$"+v.toLocaleString("en-US",{minimumFractionDigits:v%1?2:0,maximumFractionDigits:2});
+const linkOf=p=>(TAG && p.url.includes("amazon"))?p.url+"?tag="+TAG:p.url;
+function card(p){ const gk=gameKey(), res=resOf(p), ri=RES[res][0];
+  const data=PCS.map(q=>[GNAME[q.g],GAMES[gk].fps[q.g][ri],q===p]); const max=Math.max(...data.map(d=>d[1]))*1.1;
+  const rows=data.map(r=>`<div class="br${r[2]?" me":""}"><span>${r[0]}</span><i><u data-w="${Math.round(r[1]/max*100)}"></u></i><b>${r[1]}</b></div>`).join("");
+  const cpuNote = gk==="cs2" ? " CS2 leans on the processor: tested with a faster one, so expect a bit less." : "";
+  return `<article class="pc">
+   <div class="shot rig"><div class="floor" aria-hidden="true"></div>
+    <div class="pcs"><img class="off" src="img/${p.img}_off.webp" alt="" width="260" height="300"><img class="lit" src="img/${p.img}.webp" alt="${p.name}" width="260" height="300"></div>
+    <span class="gpu">${p.gpu.split(",")[0]} inside</span><button class="power" aria-pressed="false"><i aria-hidden="true"></i>Power</button></div>
+   <div>
+    <h2 class="pc-name">${p.name}</h2>
+    <div class="pc-buy"><span class="pc-price">${money(p.price)}</span><span class="store"><b>${p.shop}</b>price checked Nov 24</span></div>
+    <div class="bigfps"><b class="fpsn">0</b><span><strong>FPS on average</strong>${GAMES[gk].label}, ${RES[res][1]}</span></div>
+    <dl class="specs"><dt>Graphics</dt><dd>${p.gpu}</dd><dt>Processor</dt><dd>${p.cpu}</dd><dt>Memory</dt><dd>${p.ram}</dd><dt>Storage</dt><dd>${p.ssd}</dd></dl>
+    <p class="why">${p.why}</p>
+    <a class="cta" href="${linkOf(p)}" target="_blank" rel="sponsored noopener">See it on ${p.shop} ${ARROW}</a>
+   </div>
+   <div class="chart"><h3>${GAMES[gk].label} at ${RES[res][1]}</h3><p class="cap">Average FPS, highest settings, no upscaling. Your PC in green.</p>${rows}<small>Source: TechPowerUp.${cpuNote}</small></div>
+  </article>`; }
+// comparison: same game, same screen, so the numbers line up
+function compare(best,ranked){ const gk=gameKey(), res=resOf(best), ri=RES[res][0];
+  const cols=ranked, me=i=>i===0?' class="me"':'';
+  const row=(label,f,cls="")=>`<tr><th scope="row">${label}</th>${cols.map((p,i)=>`<td${i===0?' class="me'+(cls?" "+cls:"")+'"':(cls?` class="${cls}"`:"")}>${f(p)}</td>`).join("")}</tr>`;
+  return `<table class="cmp"><caption hidden>The 3 PCs side by side</caption>
+   <thead><tr><th scope="col"></th>${cols.map((p,i)=>`<th scope="col"${me(i)}><img src="img/${p.img}.webp" alt="" loading="lazy" width="56" height="56"><span class="${i===0?"me-h":""}">${i===0?"Your match":p.name.split(" ")[0]}</span></th>`).join("")}</tr></thead>
+   <tbody>
+    ${row("Price",p=>money(Math.round(p.price)),"n")}
+    ${row(`FPS, ${RES[res][1]}`,p=>GAMES[gk].fps[p.g][ri],"n")}
+    ${row("Graphics",p=>p.gpu)}
+    ${row("Processor",p=>p.cpu.split(",")[0])}
+    ${row("",p=>`<a href="${linkOf(p)}" target="_blank" rel="sponsored noopener">${p.shop}</a>`)}
+   </tbody></table>`; }
+const fillBars = root => requestAnimationFrame(()=>requestAnimationFrame(()=>root.querySelectorAll(".br u").forEach(u=>u.style.width=u.dataset.w+"%")));
+function result(){ const ranked=[...PCS].sort((a,b)=>score(b)-score(a)); const best=ranked[0];
+  $("#r-wait").hidden=false; $("#r-done").hidden=true; $("#r-others").hidden=true;
+  $("#r-toggle").setAttribute("aria-expanded","false"); $("#r-toggle").textContent="Compare with the other 2 PCs";
+  $("#r-best").innerHTML = card(best);
+  $("#r-others").innerHTML = compare(best,ranked);
+  $$(".mon div").forEach(d=>d.classList.toggle("on", +d.dataset.tier===best.tier));
+  $("#r-lead").textContent = cur==="eur" ? "Prices are from US stores for now; UK and EU links are coming." : "";
+  setTimeout(()=>{ if(step!==6) return;
+    $("#r-wait").hidden=true; $("#r-done").hidden=false;
+    const f=fpsOf(best); countTo(f); countEl($("#r-best .fpsn"),f,1100); fillBars($("#r-best"));
+  }, reduce?0:1300);
+}
+$("#r-toggle").onclick=()=>{ const o=$("#r-others"), open=o.hidden; o.hidden=!open; $("#r-toggle").setAttribute("aria-expanded",open);
+  $("#r-toggle").textContent=open?"Hide the comparison":"Compare with the other 2 PCs"; };
+
+// power switch: any rig can be turned on/off; PCs boot by themselves when they appear
+const power=(rig,on)=>{ if(!rig) return; rig.classList.toggle("on",on); const b=rig.querySelector(".power"); if(b) b.setAttribute("aria-pressed",on); };
+document.addEventListener("click",e=>{ const b=e.target.closest(".power"); if(b){ const rig=b.closest(".rig"); power(rig,!rig.classList.contains("on")); } });
+setTimeout(()=>power($("#hero-rig"),true), reduce?0:900);
+new MutationObserver(()=>{ const r=$("#r-best .rig"); if(r && !$("#r-done").hidden && !r.dataset.booted){ r.dataset.booted=1; setTimeout(()=>power(r,true), reduce?0:450); } })
+  .observe($("#s6"),{subtree:true,childList:true,attributes:true,attributeFilter:["hidden"]});
+
+// keep the background fan video playing (some in-app browsers pause it)
+{const v=document.querySelector(".bgvid"); const go=()=>v&&v.play().catch(()=>{}); document.addEventListener("visibilitychange",()=>{if(!document.hidden)go()}); document.addEventListener("click",go,{once:true}); go();}
+</script>
+</body>
+</html>
