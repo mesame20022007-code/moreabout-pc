@@ -86,8 +86,52 @@ html.intro .stage{display:none}
   html.intro .layout{grid-template-columns:1fr}
   html.intro .hook{position:static;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);align-items:center;gap:40px;min-height:calc(100svh - 150px)}
   html.intro .hook h1{font-size:56px}
-  html.intro .hero-rig{height:460px;margin:0}
+  html.intro .hero-rig{height:320px;margin:0;align-self:end}
 }
+
+/* cinematic hero: the AI-rendered PC video, large, sharp on the right, blurred and darkened under the headline */
+main.wrap{position:relative}
+.herovid{display:none}
+html.intro .herovid{display:block;position:absolute;top:0;left:50%;width:100vw;transform:translateX(-50%);height:min(100svh,880px);overflow:hidden;z-index:-1;pointer-events:none}
+.herovid video,.herovid img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%}
+.herovid .hv-blur{position:absolute;inset:0;-webkit-backdrop-filter:blur(14px) brightness(.6);backdrop-filter:blur(14px) brightness(.6);-webkit-mask-image:linear-gradient(90deg,#000 0,#000 36%,transparent 58%);mask-image:linear-gradient(90deg,#000 0,#000 36%,transparent 58%)}
+.herovid::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,7,6,.7) 0,rgba(5,7,6,.3) 45%,rgba(5,7,6,0) 68%),linear-gradient(rgba(5,7,6,0) 62%,var(--ink) 100%)}
+@media (max-width:899px){
+  html.intro .herovid{height:660px}
+  .herovid video,.herovid img{object-position:50% 45%}
+  .herovid .hv-blur{-webkit-mask-image:linear-gradient(#000 0,#000 50%,transparent 74%);mask-image:linear-gradient(#000 0,#000 50%,transparent 74%)}
+  .herovid::after{background:linear-gradient(rgba(5,7,6,.5) 0,rgba(5,7,6,.35) 50%,var(--ink) 100%)}
+}
+html.intro .bgvid{display:none}
+
+/* below the hero: something worth scrolling to (only before the quiz starts) */
+.disc{padding:56px 0 8px}
+html:not(.intro) .disc{display:none}
+.disc-title{font-stretch:125%;font-weight:850;font-size:clamp(26px,6vw,40px);letter-spacing:-.02em;line-height:1.02;margin-bottom:8px}
+.disc-sub{color:var(--muted);max-width:52ch;margin-bottom:24px}
+.feat{display:grid;gap:16px}
+@media (min-width:700px){.feat{grid-template-columns:1fr 1fr}}
+.fc{display:grid;grid-template-columns:120px 1fr;gap:16px;padding:16px;border:1px solid var(--ink-line);border-radius:14px;background:rgba(13,18,16,.78)}
+@media (min-width:900px){.fc{grid-template-columns:170px 1fr;gap:22px;padding:20px}}
+.fc-img{background:#0b100d;border-radius:10px;display:grid;place-items:center;padding:10px;align-self:start;aspect-ratio:4/5}
+.fc-img img{width:100%;height:100%;object-fit:contain;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.fc:hover .fc-img img{transform:scale(1.05) translateY(-3px)}
+.fc h3{font-stretch:125%;font-weight:850;font-size:20px;letter-spacing:-.01em;line-height:1.1}
+.fc-price{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0 10px}
+.fc-price>span:first-child{font-stretch:62%;font-weight:700;font-size:32px;line-height:1}
+.fc-spec{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;font-size:14px;margin-bottom:10px}
+.fc-spec dt{color:var(--muted)}
+.fc-spec dd{font-weight:600}
+.fc-spec dd.f{color:var(--green)}
+.fc-why{font-size:14px;color:#aeb7b0;margin-bottom:12px}
+.fc-cta{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:15px;color:var(--green);text-decoration:none}
+.fc-cta:hover svg{transform:translateX(3px)}.fc-cta svg{transition:transform .15s}
+.gear{list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.gear li{padding:16px;border:1px dashed #2d3a31;border-radius:12px}
+.gear b{display:block;font-weight:700}
+.gear span{font-size:13px;color:var(--muted)}
+.setup{margin:56px 0 64px;padding:36px 28px;border-radius:16px;border:1px solid #2d4a1a;background:radial-gradient(120% 140% at 100% 0,rgba(139,224,0,.16),rgba(139,224,0,0) 60%),var(--ink-2)}
+.setup .start{display:inline-flex}
 
 /* ===== The bench (quiz panel) ===== */
 .stage{position:relative}
@@ -219,6 +263,12 @@ html.intro .hero-rig{display:block;height:250px;margin-top:22px}
 .specs dt{color:var(--muted);padding:8px 0;border-bottom:1px solid var(--ink-line)}
 .specs dd{font-weight:600;padding:8px 0;border-bottom:1px solid var(--ink-line)}
 .why{font-size:16px;color:#b9c2bb;max-width:52ch;margin-bottom:14px}
+.est{font-size:13px;color:var(--muted);margin:0 0 18px}
+.fit-h{font-weight:700;font-size:16px;margin-bottom:8px}
+.fit{list-style:none;display:grid;gap:8px;margin-bottom:16px;max-width:56ch}
+.fit li{position:relative;padding-left:26px;font-size:15.5px;color:#d3dad4;line-height:1.45}
+.fit li::before{content:"";position:absolute;left:0;top:3px;width:16px;height:16px;border-radius:50%;background:var(--green) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%23050706' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/12px no-repeat}
+.opt .px.idk{display:grid;place-items:center;background-image:none;font-stretch:62%;font-weight:700;font-size:24px;color:var(--muted)}
 .note{font-size:14.5px;color:var(--mid);max-width:52ch;margin:-4px 0 16px;padding-left:12px;border-left:2px solid var(--mid)}
 .cta{display:inline-flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:18px 22px;border-radius:var(--r);background:var(--green);color:var(--ink);font-weight:800;font-size:18px;text-decoration:none;transition:transform .15s,background-color .15s}
 .cta:hover{transform:translateY(-2px);background:#9cf00f}
@@ -294,6 +344,7 @@ footer p+p{margin-top:8px}
 </header>
 
 <main class="wrap">
+ <div class="herovid" aria-hidden="true"><video src="img/hero_pc.mp4" poster="img/hero_pc.jpg" autoplay muted loop playsinline preload="auto"></video><div class="hv-blur"></div></div>
  <div class="layout">
   <div class="hook" id="hook">
     <div class="hook-text">
@@ -335,6 +386,7 @@ footer p+p{margin-top:8px}
       <button class="opt" data-v="1080"><span class="px" style="--c:11px" aria-hidden="true"></span><span class="t"><b>1080p</b><span>Most monitors and TVs under 27"</span></span></button>
       <button class="opt" data-v="1440"><span class="px" style="--c:7.5px" aria-hidden="true"></span><span class="t"><b>1440p</b><span>Sharper, the sweet spot for 27"</span></span></button>
       <button class="opt" data-v="4k"><span class="px" style="--c:4.5px" aria-hidden="true"></span><span class="t"><b>4K</b><span>Big monitor or a 4K TV</span></span></button>
+      <button class="opt" data-v="idk"><span class="px idk" aria-hidden="true">?</span><span class="t"><b>I don't know</b><span>We'll use the screen each PC is made for</span></span></button>
     </div>
     <div class="row"><button class="back" data-back>Back</button><button class="skip" data-skip>Not sure, skip</button></div>
   </section>
@@ -343,8 +395,8 @@ footer p+p{margin-top:8px}
     <p class="step"><b>Question 3</b> of 4</p>
     <h2 id="h-s3">What do you play the most?</h2>
     <div class="opts pics" data-q="games">
-      <button class="opt" data-v="open"><img src="img/q_open.webp" alt="" width="216" height="132" loading="lazy"><span class="t"><b>Big open worlds</b><span>GTA 6, Cyberpunk, RDR2</span></span></button>
-      <button class="opt" data-v="comp"><img src="img/q_comp.webp" alt="" width="216" height="132" loading="lazy"><span class="t"><b>Competitive shooters</b><span>Fortnite, CS2, Valorant, Warzone</span></span></button>
+      <button class="opt" data-v="open"><img src="img/q_open.webp" alt="" width="216" height="132" loading="lazy"><span class="t"><b>AAA &amp; open worlds</b><span>GTA 6, Cyberpunk, Red Dead Redemption 2</span></span></button>
+      <button class="opt" data-v="comp"><img src="img/q_comp.webp" alt="" width="216" height="132" loading="lazy"><span class="t"><b>Competitive games</b><span>Fortnite, Valorant, CS2, Warzone</span></span></button>
       <button class="opt" data-v="mix"><img src="img/q_mix.webp" alt="" width="216" height="132" loading="lazy"><span class="t"><b>A bit of everything</b><span>Whatever's new</span></span></button>
     </div>
     <div class="row"><button class="back" data-back>Back</button><button class="skip" data-skip>Skip</button></div>
@@ -386,6 +438,28 @@ footer p+p{margin-top:8px}
   </section>
   </div>
  </div>
+
+ <section class="disc" aria-labelledby="feat-t">
+   <h2 class="disc-title sr" id="feat-t">The 4 PCs we picked</h2>
+   <p class="disc-sub sr">Prebuilt PCs we checked for Christmas 2026, from $749 to $2,240. Prices and FPS are the same numbers the quiz uses.</p>
+   <div class="feat" id="feat"></div>
+ </section>
+ <section class="disc" aria-labelledby="gear-t">
+   <h2 class="disc-title sr" id="gear-t">Complete the setup</h2>
+   <p class="disc-sub sr">The screen, keyboard, mouse and headset we'd pair with these PCs. We're still testing, so no picks yet.</p>
+   <ul class="gear">
+     <li class="sr"><b>Monitors</b><span>Picks coming soon</span></li>
+     <li class="sr"><b>Keyboards</b><span>Picks coming soon</span></li>
+     <li class="sr"><b>Mice</b><span>Picks coming soon</span></li>
+     <li class="sr"><b>Headsets</b><span>Picks coming soon</span></li>
+     <li class="sr"><b>Chairs</b><span>Picks coming soon</span></li>
+   </ul>
+ </section>
+ <section class="disc setup sr" aria-labelledby="setup-t">
+   <h2 class="disc-title" id="setup-t">Not sure which one is yours?</h2>
+   <p class="disc-sub">Tell us your budget, your screen and what you play. In 30 seconds you get one PC, the FPS it gets in your games, and why it fits you.</p>
+   <button class="start" data-start>Find my PC <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+ </section>
 </main>
 
 <footer id="how">
@@ -399,7 +473,7 @@ footer p+p{margin-top:8px}
     <div>
       <h4>Disclosure and credits</h4>
       <p>As an Amazon Associate, Moreabout PC earns from qualifying purchases, at no extra cost to you.</p>
-      <p>Photos on Pexels: Sachin Shettigar (background video), Vika Glitter, Yan Krukau, Ron Lach, Gibson Chan, Andrey Matveev.</p>
+      <p>Photos on Pexels: Sachin Shettigar (background video), Vika Glitter, Yan Krukau, Ron Lach, Gibson Chan, Andrey Matveev. The big PC video at the top is generated with Google Gemini from the Acer Nitro 85 product photo.</p>
     </div>
   </div>
 </footer>
@@ -461,7 +535,9 @@ if(G){
 // ===== 2. START: the hero folds into the side and the quiz enters =====
 function qEls(scr){ return scr.querySelectorAll(":scope > :not(.opts):not([hidden]), :scope > .opts > .opt"); }
 function enterScreen(scr,dir=1){ if(!G) return; G.from(qEls(scr),{x:46*dir,opacity:0,duration:.5,stagger:.055,ease:"power3.out",clearProps:"transform,opacity"}); }
-$("#start").onclick=()=>{
+document.addEventListener("click",e=>{ if(e.target.closest("[data-start]")){ window.scrollTo(0,0); start(); } });
+$("#start").onclick=()=>start();
+function start(){
   if(!html.classList.contains("intro")) return;
   $("#qcount").textContent="1 of 4";
   if(!G){ html.classList.remove("intro"); $("#s1 .opt").focus({preventScroll:true}); return; }
@@ -511,7 +587,7 @@ $$(".opts").forEach(g=>g.querySelectorAll(".opt").forEach(b=>b.addEventListener(
   s.className="ripple"; s.style.cssText=`width:${d}px;height:${d}px;left:${(e.clientX||r.left+r.width/2)-r.left-d/2}px;top:${(e.clientY||r.top+r.height/2)-r.top-d/2}px`;
   b.appendChild(s); setTimeout(()=>s.remove(),520);
   if(G){ G.to(all.filter(x=>x!==b),{opacity:.35,scale:.97,duration:.25,ease:"power2.out"}); G.fromTo(b,{scale:.96},{scale:1,duration:.4,ease:"back.out(3)"}); }
-  A[g.dataset.q]=b.dataset.v; setTimeout(()=>show(step+1),reduce?0:380); })));
+  A[g.dataset.q]=b.dataset.v==="idk"?null:b.dataset.v; setTimeout(()=>show(step+1),reduce?0:380); })));
 $$(".opt").forEach(b=>b.setAttribute("aria-pressed","false"));
 $$("[data-skip]").forEach(b=>b.onclick=()=>show(step+1));
 $$("[data-back]").forEach(b=>b.onclick=()=>show(Math.max(1,step-1),true));
@@ -542,6 +618,19 @@ const money=v=>"$"+v.toLocaleString("en-US",{minimumFractionDigits:v%1?2:0,maxim
 const linkOf=p=>(TAG && p.url.includes("amazon"))?p.url+"?tag="+TAG:p.url;
 
 // ===== 5. The result: a dark product band, then the details on paper =====
+// "Why it fits you": one line per answer, built from the same numbers the site shows
+const BUD={usd:{1:"under $900",2:"$900 to $1,800",3:"$1,800 to $2,500"},eur:{1:"under €850",2:"€850 to €1,700",3:"€1,700 to €2,400"}};
+function reasons(p){ const gk=gameKey(), res=resOf(p), f=fpsOf(p), out=[];
+  const perf = gk==="avg" ? `about ${f} FPS on average across 25 games` : `about ${f} FPS in ${GAMES[gk].label}`;
+  if(A.budget){ const b=+A.budget; out.push(p.tier===b ? `You said ${BUD[cur][b]}: it's the strongest PC we picked in that range.` : `It costs less than your budget and still fits the rest of your answers.`); }
+  out.push(A.res ? `You play at ${RES[res][1]}: ${perf}.` : `It's made for ${RES[res][1]} screens: ${perf} there.`);
+  const vram=parseInt(p.gpu.split(", ")[1]);
+  if(A.games==="open") out.push(vram>=12 ? `You play AAA and open worlds: ${vram} GB of video memory keeps textures on max.` : `You play AAA and open worlds: ${vram} GB of video memory is fine at 1080p; in the heaviest games, lower textures one step.`);
+  if(A.games==="comp") out.push(f>=144 ? `You play competitive games: over 144 FPS, so a 144 Hz screen is worth it.` : `You play competitive games: lower a few settings to go past 144 FPS on a fast screen.`);
+  if(A.games==="mix") out.push(`You play a bit of everything: that number is the average over 25 games, a fair picture.`);
+  if(A.rgb==="yes" && p.rgb) out.push(`You like RGB: it has colour fans behind a glass side.`);
+  if(A.rgb==="no" && !p.rgb) out.push(`You want it clean: a plain black tower, only the logo lights up.`);
+  return out; }
 function card(p){ const gk=gameKey(), res=resOf(p), ri=RES[res][0];
   const data=GPUS.map(g=>[GNAME[g],GAMES[gk].fps[g][ri],g===p.g]); const max=Math.max(...data.map(d=>d[1]))*1.1;
   const rows=data.map(r=>`<div class="br${r[2]?" me":""}"><span>${r[0]}</span><i><u data-w="${Math.round(r[1]/max*100)}"></u></i><b>${r[1]}</b></div>`).join("");
@@ -556,14 +645,16 @@ function card(p){ const gk=gameKey(), res=resOf(p), ri=RES[res][0];
      <p class="match"><b>Your match.</b> Picked from your answers.</p>
      <h2 class="pc-name">${p.name}</h2>
      <div class="pc-buy"><span class="pc-price">${money(p.price)}</span><span class="store"><b>${p.shop}</b>price checked Nov 24</span></div>
-     <div class="bigfps"><b class="fpsn">0</b><span><strong>FPS on average</strong>${GAMES[gk].label}, ${RES[res][1]}</span></div>
+     <div class="bigfps"><b class="fpsn">0</b><span><strong>FPS, estimated</strong>${GAMES[gk].label}, ${RES[res][1]}</span></div>
+     <p class="est">From tests of its graphics card with a faster processor. This exact PC can run a little lower.</p>
+     <h3 class="fit-h">Why it fits you</h3>
+     <ul class="fit">${reasons(p).map(r=>`<li>${r}</li>`).join("")}</ul>${light}
      <dl class="specs" id="r-specs"><dt>Graphics</dt><dd>${p.gpu}</dd><dt>Processor</dt><dd>${p.cpu}</dd><dt>Memory</dt><dd>${p.ram}</dd><dt>Storage</dt><dd>${p.ssd}</dd></dl>
-     <p class="why">${p.why}</p>${light}
      <a class="cta" href="${linkOf(p)}" target="_blank" rel="sponsored noopener">See it on ${p.shop} ${ARROW}</a>
      <div class="rnav"><button data-go="r-specs">Specs</button><button data-go="r-chart">Performance</button><button data-go="r-toggle">Compare</button></div>
     </div>
    </div>
-   <div class="chart" id="r-chart"><h3>${GAMES[gk].label} at ${RES[res][1]}</h3><p class="cap">Average FPS, highest settings, no upscaling. Your PC in green.</p>${rows}<small>Source: TechPowerUp.${cpuNote}</small></div>
+   <div class="chart" id="r-chart"><h3>${GAMES[gk].label} at ${RES[res][1]}</h3><p class="cap">Graphics card tests: average FPS, highest settings, no upscaling. Your PC's card in green.</p>${rows}<small>Source: TechPowerUp.${cpuNote}</small></div>
   </article>`; }
 function compare(best,ranked){ const gk=gameKey(), res=resOf(best), ri=RES[res][0];
   const cols=ranked.slice(0,3), me=i=>i===0?' class="me"':'';
@@ -599,7 +690,7 @@ function result(){ const ranked=[...PCS].sort((a,b)=>score(b)-score(a)); const b
         .from("#r-best .match, #r-best .pc-name, #r-best .pc-buy, #r-best .bigfps",{y:28,opacity:0,stagger:.08,duration:.6},.35)
         .add(()=>countEl($("#r-best .fpsn"),f,1100),.6)
         .from("#r-best .specs > *",{y:10,opacity:0,stagger:.03,duration:.35},.7)
-        .from("#r-best .why, #r-best .note, #r-best .cta, #r-best .rnav",{y:16,opacity:0,stagger:.08,duration:.5},.9)
+        .from("#r-best .est, #r-best .fit-h, #r-best .fit li, #r-best .note, #r-best .cta, #r-best .rnav",{y:16,opacity:0,stagger:.07,duration:.5},.85)
         .add(()=>power(rig,true),.95);
     } else { countEl($("#r-best .fpsn"),f,1100); setTimeout(()=>power(rig,true), reduce?0:450); }
     onView($("#r-chart"),()=>fillBars($("#r-chart")));
@@ -620,6 +711,18 @@ document.addEventListener("click",e=>{ const b=e.target.closest("[data-go]"); if
 
 // power switch on any rig
 document.addEventListener("click",e=>{ const b=e.target.closest(".power"); if(b){ const rig=b.closest(".rig"); power(rig,!rig.classList.contains("on")); } });
+
+// ===== 6. Below the hero: the 4 PCs, from the same data the quiz uses =====
+$("#feat").innerHTML = PCS.map(p=>{ const ri=RES[p.res][0], f=GAMES.cp.fps[p.g][ri];
+  return `<article class="fc"><div class="fc-img"><img src="img/${p.img}.webp" alt="${p.name}" loading="lazy" width="200" height="250"></div>
+   <div><h3>${p.name}</h3><p class="fc-price"><span>${money(p.price)}</span><span class="store"><b>${p.shop}</b>checked Nov 24</span></p>
+   <dl class="fc-spec"><dt>Graphics</dt><dd>${p.gpu}</dd><dt>Processor</dt><dd>${p.cpu.split(",")[0]}</dd><dt>Cyberpunk, ${RES[p.res][1]}</dt><dd class="f">about ${f} FPS</dd><dt>Lights</dt><dd>${p.rgb?"RGB":"Logo only"}</dd></dl>
+   <p class="fc-why">${p.why}</p><a class="fc-cta" href="${linkOf(p)}" target="_blank" rel="sponsored noopener">See it on ${p.shop} ${ARROW}</a></div></article>`; }).join("");
+if(G){
+  $$(".disc .sr").forEach(el=>onView(el,()=>G.from(el,{y:26,opacity:0,duration:.7,ease:"power3.out",clearProps:"transform,opacity"})));
+  onView($("#feat"),()=>G.from("#feat .fc",{y:40,opacity:0,duration:.7,stagger:.1,ease:"power3.out",clearProps:"transform,opacity"}));
+}
+{const v=document.querySelector(".herovid video"); const go=()=>v&&html.classList.contains("intro")&&v.play().catch(()=>{}); document.addEventListener("visibilitychange",()=>{if(!document.hidden)go()}); go();}
 
 // keep the background fan video playing (some in-app browsers pause it)
 {const v=document.querySelector(".bgvid"); const go=()=>v&&v.play().catch(()=>{}); document.addEventListener("visibilitychange",()=>{if(!document.hidden)go()}); document.addEventListener("click",go,{once:true}); go();}
